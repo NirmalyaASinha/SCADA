@@ -81,16 +81,30 @@ python electrical/protection.py
 # Expected output: Power flow convergence, frequency recovery plots, thermal trips
 ```
 
-### Running Simulator (when complete)
+### Running Complete System
 ```bash
-# Start all services
-docker-compose up -d
+# Option 1: Docker Deployment (Recommended)
+./deploy-docker.sh up
 
-# Start main simulator
-python main.py --config config.py --log-level INFO
+# Access Web Dashboard
+http://localhost:8501
+# Default login: admin/admin123
 
-# Monitor in separate terminal
-curl http://localhost:8001/historian/latest?tags=SUB001.TR1.BusVoltage.A
+# Access API Documentation
+http://localhost:8000/docs
+
+# Option 2: Manual Start
+# Terminal 1: Simulator
+python3 simulator.py
+
+# Terminal 2: API Server
+python3 api_server.py
+
+# Terminal 3: Web Dashboard
+streamlit run dashboard.py
+
+# Terminal 4: SCADA Master CLI (optional)
+python3 scada_master_cli.py
 ```
 
 ## Architecture
@@ -99,11 +113,11 @@ See [ARCHITECTURE.md](ARCHITECTURE.md) for complete system design.
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                      SCADA MASTER (OCC)                      │
-│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌─────────────┐ │
-│  │ Polling  │  │   AVR    │  │  Alarm   │  │     SOE     │ │
-│  │  Engine  │  │  Control │  │ Manager  │  │  Recorder   │ │
-│  └──────────┘  └──────────┘  └──────────┘  └─────────────┘ │
+│                      SCADA MASTER (OCC)                     │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌─────────────┐  │
+│  │ Polling  │  │   AVR    │  │  Alarm   │  │     SOE     │  │
+│  │  Engine  │  │  Control │  │ Manager  │  │  Recorder   │  │
+│  └──────────┘  └──────────┘  └──────────┘  └─────────────┘  │
 └────────┬──────────────────────────────────────────┬─────────┘
          │ Modbus/IEC104/DNP3                       │
          ▼                                          ▼
@@ -116,7 +130,7 @@ See [ARCHITECTURE.md](ARCHITECTURE.md) for complete system design.
 │  │  - Thermal Model         │   │      │  ├────────────┤  │
 │  │  - Protection Relays     │   │      │  │ 1-min agg  │  │
 │  └──────────┬───────────────┘   │      │  ├────────────┤  │
-│             ▼                    │      │  │ 1-hour agg │  │
+│             ▼                   │      │  │ 1-hour agg │  │
 │  ┌──────────────────────────┐   │      │  └────────────┘  │
 │  │  Protocol Servers        │   │      └──────────────────┘
 │  │  - Modbus TCP :502       │   │
@@ -124,12 +138,12 @@ See [ARCHITECTURE.md](ARCHITECTURE.md) for complete system design.
 │  │  - DNP3 :20000           │   │      │  Security Log    │
 │  │  - Data Quality Flags    │   │      │  ┌────────────┐  │
 │  └──────────────────────────┘   │      │  │ Protocol   │  │
-└──┬───────────────────────────────┘      │  │Transaction │  │
-   │                                      │  ├────────────┤  │
-   ▼                                      │  │  Traffic   │  │
-┌──────────────────────────┐              │  │  Features  │  │
-│  Equipment Failures      │              │  └────────────┘  │
-│  - Weibull Reliability   │              └──────────────────┘
+└──┬──────────────────────────────┘      │  │Transaction │  │
+   │                                     │  ├────────────┤  │
+   ▼                                     │  │  Traffic   │  │
+┌──────────────────────────┐             │  │  Features  │  │
+│  Equipment Failures      │             │  └────────────┘  │
+│  - Weibull Reliability   │             └──────────────────┘
 │  - Degradation Modes     │
 │  - Communication Loss    │                        │
 └──────────────────────────┘                        ▼

@@ -39,6 +39,7 @@ show_usage() {
     echo "  status      - Show status of services"
     echo "  clean       - Remove containers and volumes"
     echo "  test        - Run tests in container"
+    echo "  dashboard   - Open web dashboard in browser"
     echo ""
 }
 
@@ -59,16 +60,18 @@ case $COMMAND in
         echo "✓ Services started"
         echo ""
         echo "Access points:"
+        echo "  - Web Dashboard:    http://localhost:8501 (login: admin/admin123)"
+        echo "  - API Server:       http://localhost:8000/docs"
         echo "  - Modbus TCP:       localhost:502"
         echo "  - IEC 104:          localhost:2404"
         echo "  - TimescaleDB:      localhost:5432"
         echo "  - Secure Master:    localhost:8080"
         echo ""
-        echo "To view logs:"
-        echo "  docker compose logs -f"
+        echo "Quick commands:"
+        echo "  ./deploy-docker.sh dashboard  - Open web dashboard in browser"
+        echo "  ./deploy-docker.sh logs       - View service logs"
+        echo "  ./deploy-docker.sh status     - Check service status"
         echo ""
-        echo "To check status:"
-        echo "  docker compose ps"
         ;;
     
     down)
@@ -113,6 +116,21 @@ case $COMMAND in
     test)
         echo "Running tests in container..."
         docker compose run --rm simulator python3 run_tests.py
+        ;;
+    
+    dashboard)
+        echo "Opening web dashboard in browser..."
+        # Try different browser commands based on OS
+        if command -v xdg-open &> /dev/null; then
+            xdg-open http://localhost:8501
+        elif command -v open &> /dev/null; then
+            open http://localhost:8501
+        elif command -v start &> /dev/null; then
+            start http://localhost:8501
+        else
+            echo "Dashboard URL: http://localhost:8501"
+            echo "Please open this URL in your browser"
+        fi
         ;;
     
     help|--help|-h)

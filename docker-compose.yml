@@ -85,6 +85,50 @@ services:
       - audit_logs:/app/logs/audit
     restart: unless-stopped
 
+  # API Server (FastAPI REST API for dashboard)
+  api_server:
+    build: .
+    container_name: scada_api_server
+    environment:
+      PYTHONUNBUFFERED: 1
+      SCADA_MODE: api_server
+      TIMESCALE_DB_URL: postgresql://scada:scada_secure_password@timescaledb:5432/scada_historian
+    ports:
+      - "8000:8000"    # REST API
+    depends_on:
+      - simulator
+      - timescaledb
+    networks:
+      - scada_network
+    volumes:
+      - ./logs:/app/logs
+    command: python3 api_server.py
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Web Dashboard (Streamlit UI)
+  dashboard:
+    build: .
+    container_name: scada_dashboard
+    environment:
+      PYTHONUNBUFFERED: 1
+      SCADA_MODE: dashboard
+      API_BASE_URL: http://api_server:8000
+    ports:
+      - "8501:8501"    # Streamlit web UI
+    depends_on:
+      - api_server
+    networks:
+      - scada_network
+    volumes:
+      - ./logs:/app/logs
+    command: streamlit run dashboard.py --server.port=8501 --server.address=0.0.0.0
+    restart: unless-stopped
+
 networks:
   scada_network:
     driver: bridge

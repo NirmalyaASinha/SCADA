@@ -301,3 +301,64 @@
 {"timestamp": "2026-02-26T13:49:21.655222", "event_type": "login_success", "severity": "info", "user": "operator", "source_ip": "127.0.0.1", "action": "login", "result": "success", "details": {"timestamp": "2026-02-26T13:49:21.655221"}}
 {"timestamp": "2026-02-26T13:49:21.655377", "event_type": "node_added", "severity": "info", "user": "admin", "node_id": "GEN-001", "action": "add_node", "result": "success", "details": {"ip": "127.0.0.1", "modbus_port": 502, "iec104_port": 2414}}
 {"timestamp": "2026-02-26T13:49:21.655478", "event_type": "system_stop", "severity": "info", "user": "system", "action": "scada_master_stop"}
+{"timestamp": "2026-02-26T13:59:17.601073", "event_type": "system_start", "severity": "info", "user": "system", "action": "scada_master_start"}
+{"timestamp": "2026-02-26T13:59:17.601225", "event_type": "system_stop", "severity": "info", "user": "system", "action": "scada_master_stop"}
+{"timestamp": "2026-02-26T13:59:17.601403", "event_type": "system_start", "severity": "info", "user": "system", "action": "scada_master_start"}
+{"timestamp": "2026-02-26T13:59:17.601490", "event_type": "login_success", "severity": "info", "user": "admin", "source_ip": "127.0.0.1", "action": "login", "result": "success", "details": {"timestamp": "2026-02-26T13:59:17.601487"}}
+{"timestamp": "2026-02-26T13:59:17.601562", "event_type": "logout", "severity": "info", "user": "admin", "action": "logout"}
+{"timestamp": "2026-02-26T13:59:17.601614", "event_type": "system_stop", "severity": "info", "user": "system", "action": "scada_master_stop"}
+{"timestamp": "2026-02-26T13:59:17.601766", "event_type": "system_start", "severity": "info", "user": "system", "action": "scada_master_start"}
+{"timestamp": "2026-02-26T13:59:17.601833", "event_type": "login_failure", "severity": "warning", "user": "admin", "source_ip": "127.0.0.1", "action": "login", "result": "failure", "details": {"timestamp": "2026-02-26T13:59:17.601829"}}
+{"timestamp": "2026-02-26T13:59:17.601892", "event_type": "login_failure", "severity": "warning", "user": "nonexistent", "source_ip": "127.0.0.1", "action": "login", "result": "failure", "details": {"timestamp": "2026-02-26T13:59:17.601889"}}
+{"timestamp": "2026-02-26T13:59:17.601942", "event_type": "system_stop", "severity": "info", "user": "system", "action": "scada_master_stop"}
+{"timestamp": "2026-02-26T13:59:17.602097", "event_type": "system_start", "severity": "info", "user": "system", "action": "scada_master_start"}
+{"timestamp": "2026-02-26T13:59:17.602181", "event_type": "login_success", "severity": "info", "user": "admin", "source_ip": "127.0.0.1", "action": "login", "result": "success", "details": {"timestamp": "2026-02-26T13:59:17.602178"}}
+{"timestamp": "2026-02-26T13:59:17.602302", "event_type": "node_added", "severity": "info", "user": "admin", "node_id": "GEN-001", "action": "add_node", "result": "success", "details": {"ip": "127.0.0.1", "modbus_port": 502, "iec104_port": 2414}}
+{"timestamp": "2026-02-26T13:59:17.602362", "event_type": "system_stop", "severity": "info", "user": "system", "action": "scada_master_stop"}
+{"timestamp": "2026-02-26T13:59:17.602525", "event_type": "system_start", "severity": "info", "user": "system", "action": "scada_master_start"}
+{"timestamp": "2026-02-26T13:59:17.602605", "event_type": "login_success", "severity": "info", "user": "viewer", "source_ip": "127.0.0.1", "action": "login", "result": "success", "details": {"timestamp": "2026-02-26T13:59:17.602602"}}
+{"timestamp": "2026-02-26T13:59:17.602672", "event_type": "access_denied", "severity": "warning", "user": "viewer", "action": "add_node", "result": "denied", "details": {"reason": "insufficient_permissions"}}
+{"timestamp": "2026-02-26T13:59:17.602736", "event_type": "system_stop", "severity": "info", "user": "system", "action": "scada_master_stop"}
+{"timestamp": "2026-02-26T13:59:17.602905", "event_type": "system_start", "severity": "info", "user": "system", "action": "scada_master_start"}
+{"timestamp": "2026-02-26T13:59:17.602988", "event_type": "login_success", "severity": "info", "user": "operator", "source_ip": "127.0.0.1", "action": "login", "result": "success", "details": {"timestamp": "2026-02-26T13:59:17.602986"}}
+{"timestamp": "2026-02-26T13:59:17.603067", "event_type": "login_success", "severity": "info", "user": "admin", "source_ip": "127.0.0.1", "action": "login", "result": "success", "details": {"timestamp": "2026-02-26T13:59:17.603064"}}
+{"timestamp": "2026-02-26T13:59:17.603310", "event_type": "node_added", "severity": "info", "user": "admin", "node_id": "GEN-001", "action": "add_node", "result": "success", "details": {"ip": "127.0.0.1", "modbus_port": 502, "iec104_port": 2414}}
+{"timestamp": "2026-02-26T13:59:17.603470", "event_type": "system_start", "severity": "info", "user": "system", "action": "polling_start", "details": {"nodes": 1}}
+{"timestamp": "2026-02-26T13:59:17.904086", "event_type": "command_issued", "severity": "info", "user": "operator", "node_id": "GEN-001", "action": "close_breaker", "details": {"value": null}}
+{"timestamp": "2026-02-26T13:59:17.904381", "event_type": "command_executed", "severity": "info", "user": "operator", "node_id": "GEN-001", "action": "close_breaker", "result": "success", "details": {"value": null}}
+{"timestamp": "2026-02-26T13:59:17.904445", "event_type": "system_stop", "severity": "info", "user": "system", "action": "scada_master_stop"}
+{"timestamp": "2026-02-26T13:59:22.608967", "event_type": "system_start", "severity": "info", "user": "system", "action": "scada_master_start"}
+{"timestamp": "2026-02-26T13:59:22.609088", "event_type": "login_success", "severity": "info", "user": "viewer", "source_ip": "127.0.0.1", "action": "login", "result": "success", "details": {"timestamp": "2026-02-26T13:59:22.609086"}}
+{"timestamp": "2026-02-26T13:59:22.609171", "event_type": "login_success", "severity": "info", "user": "admin", "source_ip": "127.0.0.1", "action": "login", "result": "success", "details": {"timestamp": "2026-02-26T13:59:22.609169"}}
+{"timestamp": "2026-02-26T13:59:22.609283", "event_type": "node_added", "severity": "info", "user": "admin", "node_id": "GEN-001", "action": "add_node", "result": "success", "details": {"ip": "127.0.0.1", "modbus_port": 502, "iec104_port": 2414}}
+{"timestamp": "2026-02-26T13:59:22.609343", "event_type": "access_denied", "severity": "warning", "user": "viewer", "action": "command_close_breaker", "result": "denied", "details": {"reason": "requires_control_breaker"}}
+{"timestamp": "2026-02-26T13:59:22.609395", "event_type": "system_stop", "severity": "info", "user": "system", "action": "scada_master_stop"}
+{"timestamp": "2026-02-26T13:59:22.609566", "event_type": "system_start", "severity": "info", "user": "system", "action": "scada_master_start"}
+{"timestamp": "2026-02-26T13:59:22.609641", "event_type": "login_success", "severity": "info", "user": "viewer", "source_ip": "127.0.0.1", "action": "login", "result": "success", "details": {"timestamp": "2026-02-26T13:59:22.609639"}}
+{"timestamp": "2026-02-26T13:59:22.609703", "event_type": "login_success", "severity": "info", "user": "admin", "source_ip": "127.0.0.1", "action": "login", "result": "success", "details": {"timestamp": "2026-02-26T13:59:22.609702"}}
+{"timestamp": "2026-02-26T13:59:22.609809", "event_type": "node_added", "severity": "info", "user": "admin", "node_id": "GEN-001", "action": "add_node", "result": "success", "details": {"ip": "127.0.0.1", "modbus_port": 502, "iec104_port": 2414}}
+{"timestamp": "2026-02-26T13:59:22.609868", "event_type": "system_stop", "severity": "info", "user": "system", "action": "scada_master_stop"}
+{"timestamp": "2026-02-26T13:59:22.610021", "event_type": "system_start", "severity": "info", "user": "system", "action": "scada_master_start"}
+{"timestamp": "2026-02-26T13:59:22.610086", "event_type": "system_stop", "severity": "info", "user": "system", "action": "scada_master_stop"}
+{"timestamp": "2026-02-26T13:59:22.610247", "event_type": "system_start", "severity": "info", "user": "system", "action": "scada_master_start"}
+{"timestamp": "2026-02-26T13:59:22.610328", "event_type": "login_success", "severity": "info", "user": "admin", "source_ip": "127.0.0.1", "action": "login", "result": "success", "details": {"timestamp": "2026-02-26T13:59:22.610327"}}
+{"timestamp": "2026-02-26T13:59:22.610457", "event_type": "node_added", "severity": "info", "user": "admin", "node_id": "GEN-001", "action": "add_node", "result": "success", "details": {"ip": "127.0.0.1", "modbus_port": 502, "iec104_port": 2414}}
+{"timestamp": "2026-02-26T13:59:22.610529", "event_type": "command_issued", "severity": "info", "user": "admin", "node_id": "GEN-001", "action": "close_breaker", "details": {"value": null}}
+{"timestamp": "2026-02-26T13:59:22.610595", "event_type": "command_failed", "severity": "error", "user": "admin", "node_id": "GEN-001", "action": "close_breaker", "result": "failure", "details": {"error": "'NoneType' object has no attribute 'put'"}}
+{"timestamp": "2026-02-26T13:59:22.610679", "event_type": "system_stop", "severity": "info", "user": "system", "action": "scada_master_stop"}
+{"timestamp": "2026-02-26T13:59:22.610863", "event_type": "system_start", "severity": "info", "user": "system", "action": "scada_master_start"}
+{"timestamp": "2026-02-26T13:59:22.610950", "event_type": "login_success", "severity": "info", "user": "admin", "source_ip": "127.0.0.1", "action": "login", "result": "success", "details": {"timestamp": "2026-02-26T13:59:22.610948"}}
+{"timestamp": "2026-02-26T13:59:22.611029", "event_type": "system_stop", "severity": "info", "user": "system", "action": "scada_master_stop"}
+{"timestamp": "2026-02-26T13:59:22.611217", "event_type": "system_start", "severity": "info", "user": "system", "action": "scada_master_start"}
+{"timestamp": "2026-02-26T13:59:22.611304", "event_type": "login_success", "severity": "info", "user": "viewer", "source_ip": "127.0.0.1", "action": "login", "result": "success", "details": {"timestamp": "2026-02-26T13:59:22.611302"}}
+{"timestamp": "2026-02-26T13:59:22.611381", "event_type": "system_stop", "severity": "info", "user": "system", "action": "scada_master_stop"}
+{"timestamp": "2026-02-26T13:59:22.611554", "event_type": "system_start", "severity": "info", "user": "system", "action": "scada_master_start"}
+{"timestamp": "2026-02-26T13:59:22.611665", "event_type": "login_success", "severity": "info", "user": "admin", "source_ip": "127.0.0.1", "action": "login", "result": "success", "details": {"timestamp": "2026-02-26T13:59:22.611663"}}
+{"timestamp": "2026-02-26T13:59:22.611743", "event_type": "system_stop", "severity": "info", "user": "system", "action": "scada_master_stop"}
+{"timestamp": "2026-02-26T13:59:22.611927", "event_type": "system_start", "severity": "info", "user": "system", "action": "scada_master_start"}
+{"timestamp": "2026-02-26T13:59:22.612006", "event_type": "system_stop", "severity": "info", "user": "system", "action": "scada_master_stop"}
+{"timestamp": "2026-02-26T13:59:22.612196", "event_type": "system_start", "severity": "info", "user": "system", "action": "scada_master_start"}
+{"timestamp": "2026-02-26T13:59:22.612291", "event_type": "login_success", "severity": "info", "user": "admin", "source_ip": "127.0.0.1", "action": "login", "result": "success", "details": {"timestamp": "2026-02-26T13:59:22.612289"}}
+{"timestamp": "2026-02-26T13:59:22.612378", "event_type": "login_success", "severity": "info", "user": "operator", "source_ip": "127.0.0.1", "action": "login", "result": "success", "details": {"timestamp": "2026-02-26T13:59:22.612377"}}
+{"timestamp": "2026-02-26T13:59:22.612536", "event_type": "node_added", "severity": "info", "user": "admin", "node_id": "GEN-001", "action": "add_node", "result": "success", "details": {"ip": "127.0.0.1", "modbus_port": 502, "iec104_port": 2414}}
+{"timestamp": "2026-02-26T13:59:22.612630", "event_type": "system_stop", "severity": "info", "user": "system", "action": "scada_master_stop"}
