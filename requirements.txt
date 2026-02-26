@@ -1,0 +1,72 @@
+# Python Dependencies for SCADA Simulator
+
+# Core numerical computing
+numpy>=1.24.0
+scipy>=1.10.0
+
+# Async networking for protocol servers
+asyncio
+aiohttp>=3.8.0
+
+# Modbus protocol
+pymodbus>=3.5.0
+
+# IEC 60870-5-104 protocol
+lib60870>=1.0.0
+
+# DNP3 protocol (Python bindings for OpenDNP3)
+pydnp3>=0.2.3
+
+# Database
+psycopg2-binary>=2.9.0      # PostgreSQL driver
+sqlalchemy>=2.0.0            # ORM
+asyncpg>=0.29.0              # Async PostgreSQL
+
+# TimescaleDB (PostgreSQL extension - installed via Docker)
+# No Python package needed, uses psycopg2
+
+# Time handling
+python-dateutil>=2.8.0
+pytz>=2023.3
+
+# Configuration
+pyyaml>=6.0
+python-dotenv>=1.0.0
+
+# Logging
+loguru>=0.7.0
+
+# Metrics and monitoring
+prometheus-client>=0.19.0
+
+# API framework (for historian API)
+fastapi>=0.109.0
+uvicorn>=0.27.0
+pydantic>=2.5.0
+
+# Data serialization
+msgpack>=1.0.0
+
+# Testing
+pytest>=7.4.0
+pytest-asyncio>=0.21.0
+pytest-cov>=4.1.0
+
+# Code quality
+black>=23.0.0
+flake8>=6.0.0
+mypy>=1.7.0
+
+# Documentation
+sphinx>=7.0.0
+sphinx-rtd-theme>=2.0.0
+
+# Utilities
+tqdm>=4.66.0                # Progress bars
+click>=8.1.0                # CLI framework
+
+# Optional: for plotting in test scripts
+matplotlib>=3.7.0
+
+# Docker SDK (for container orchestration from Python)
+docker>=7.0.0

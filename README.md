@@ -1,0 +1,312 @@
+# Production-Faithful SCADA Simulator for Indian Power Grid
+
+A high-fidelity simulation of Indian power grid SCADA infrastructure for cybersecurity research, anomaly detection training, and ICS protocol analysis.
+
+## Overview
+
+This simulator replicates a 15-node power grid with:
+- **3 Generation stations** (500MW coal, 300MW hydro, 200MW solar)
+- **7 Transmission substations** (400kV)
+- **5 Distribution substations** (132kV)
+
+Implements real electrical engineering, authentic ICS protocols, and operational procedures matching actual Indian grid (GRID-INDIA/POSOCO) characteristics.
+
+## Key Features
+
+### Electrical System
+- ✅ **DC Power Flow**: 15-bus Newton-Raphson solver with line losses
+- ✅ **Frequency Dynamics**: Swing equation, governor droop, AGC
+- ✅ **Transformer Thermal Model**: IEC 60076-7  with oil/hot-spot temperatures
+- ✅ **Protection Relays**: ANSI 27/51/59/81/87T with real trip curves
+- ✅ **Indian Load Profile**: Time-of-day, seasonal, festival patterns
+- ✅ **Economic Despatch**: Merit order (solar → hydro → coal)
+
+### SCADA Protocols
+- ⏳ **Modbus TCP**: Production-faithful RTU behavior (8-40ms response times)
+- ⏳ **IEC 60870-5-104**: Spontaneous transmission, time tagging
+- ⏳ **DNP3**: Unsolicited responses, event buffering
+
+### Operational Realism
+- ⏳ **SCADA Master**: Multi-node polling (0.5s/2s/10s intervals)
+- ⏳ **AVR Control**: Automatic voltage regulation via OLTC
+- ⏳ **Alarm Management**: IEC 62682 priorities and state machine
+- ⏳ **SOE Recording**: 1ms timestamp resolution
+- ⏳ **Equipment Failures**: Weibull reliability with pre-failure signatures
+
+### Data Infrastructure
+- ⏳ **TimescaleDB**: Time-series historian with compression
+- ⏳ **Security Logging**: Per-transaction logging for ML training
+- ⏳ **Feature Extraction**: Traffic statistics for anomaly detection
+
+## Quick Start
+
+### Prerequisites
+```bash
+# System requirements
+- Docker & Docker Compose
+- Python 3.10+
+- 8GB RAM minimum (16GB recommended)
+- 50GB disk space
+```
+
+### Installation
+```bash
+# Clone repository
+git clone <repository-url>
+cd SCADA_SIM
+
+# Create virtual environment
+python3 -m venv venv
+source venv/bin/activate  # Linux/Mac
+# or: venv\Scripts\activate  # Windows
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Start TimescaleDB (historian database)
+docker-compose up -d timescaledb
+
+# Initialize database schema
+python database/init_db.py
+```
+
+### Running Tests
+```bash
+# Test electrical modules
+python electrical/power_flow.py
+python electrical/frequency_model.py
+python electrical/thermal_model.py
+python electrical/protection.py
+
+# Expected output: Power flow convergence, frequency recovery plots, thermal trips
+```
+
+### Running Simulator (when complete)
+```bash
+# Start all services
+docker-compose up -d
+
+# Start main simulator
+python main.py --config config.py --log-level INFO
+
+# Monitor in separate terminal
+curl http://localhost:8001/historian/latest?tags=SUB001.TR1.BusVoltage.A
+```
+
+## Architecture
+
+See [ARCHITECTURE.md](ARCHITECTURE.md) for complete system design.
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                      SCADA MASTER (OCC)                      │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌─────────────┐ │
+│  │ Polling  │  │   AVR    │  │  Alarm   │  │     SOE     │ │
+│  │  Engine  │  │  Control │  │ Manager  │  │  Recorder   │ │
+│  └──────────┘  └──────────┘  └──────────┘  └─────────────┘ │
+└────────┬──────────────────────────────────────────┬─────────┘
+         │ Modbus/IEC104/DNP3                       │
+         ▼                                          ▼
+┌─────────────────────────────────┐      ┌──────────────────┐
+│    RTU Nodes (15)               │      │  TimescaleDB     │
+│  ┌──────────────────────────┐   │      │   Historian      │
+│  │  Electrical Simulation   │   │      │  ┌────────────┐  │
+│  │  - Power Flow            │   │      │  │ Raw Scans  │  │
+│  │  - Frequency Model       │   │      │  │ (2s rate)  │  │
+│  │  - Thermal Model         │   │      │  ├────────────┤  │
+│  │  - Protection Relays     │   │      │  │ 1-min agg  │  │
+│  └──────────┬───────────────┘   │      │  ├────────────┤  │
+│             ▼                    │      │  │ 1-hour agg │  │
+│  ┌──────────────────────────┐   │      │  └────────────┘  │
+│  │  Protocol Servers        │   │      └──────────────────┘
+│  │  - Modbus TCP :502       │   │
+│  │  - IEC 104 :2404         │   │      ┌──────────────────┐
+│  │  - DNP3 :20000           │   │      │  Security Log    │
+│  │  - Data Quality Flags    │   │      │  ┌────────────┐  │
+│  └──────────────────────────┘   │      │  │ Protocol   │  │
+└──┬───────────────────────────────┘      │  │Transaction │  │
+   │                                      │  ├────────────┤  │
+   ▼                                      │  │  Traffic   │  │
+┌──────────────────────────┐              │  │  Features  │  │
+│  Equipment Failures      │              │  └────────────┘  │
+│  - Weibull Reliability   │              └──────────────────┘
+│  - Degradation Modes     │
+│  - Communication Loss    │                        │
+└──────────────────────────┘                        ▼
+                                         ┌──────────────────┐
+                                         │  ML Training     │
+                                         │  - Isolation     │
+                                         │    Forest        │
+                                         │  - LSTM          │
+                                         │  - Transformer   │
+                                         └──────────────────┘
+```
+
+## Project Philosophy
+
+**Every design decision answers the question:**  
+> "Is this how a real substation/grid actually behaves?"
+
+If the answer is no — we fix it.
+
+### Electrical Fidelity
+- Kirchhoff's laws enforced at every node
+- Frequency is global (all generators share same frequency)
+- Thermal time constants match IEC 60076-7 (180 min for transformer oil)
+- Protection operates per ANSI standards (not approximations)
+
+### Protocol Fidelity
+- Response times match real RTUs (8-15ms for Modbus FC01, 12-25ms for FC03)
+- State machines mirror actual devices (IDLE/PROCESSING/RESPONDING)
+- Data quality on every measurement (IEC 61968 flags)
+- Exception codes match specification
+
+### Operational Fidelity
+- SCADA poll rates realistic (2s critical, 10s normal, 0.5s discrete)
+- AGC interval matches practice (4 seconds)
+- OLTC delays realistic (30-45s mechanical delay)
+- Alarm priorities per IEC 62682
+
+### Indian Grid Characteristics
+- Load profile matches POSOCO data (evening peak at 20:00, afternoon dip)
+- Frequency tolerance wider than European grids (49.7-50.3 Hz normal)
+- Seasonal patterns (summer +20% AC load, monsoon baseline)
+- Festival spikes (Diwali +25% at 20:00)
+
+## Implementation Status
+
+| Component | Status | Files |
+|-----------|--------|-------|
+| Configuration | ✅ Complete | config.py |
+| Power Flow | ✅ Complete | electrical/power_flow.py |
+| Frequency Model | ✅ Complete | electrical/frequency_model.py |
+| Thermal Model | ✅ Complete | electrical/thermal_model.py |
+| Protection Relays | ✅ Complete | electrical/protection.py |
+| Load Profile | ✅ Complete | electrical/load_profile.py |
+| Economic Despatch | ✅ Complete | electrical/economic_despatch.py |
+| Modbus Register Map | ✅ Complete | protocols/modbus/register_map.py |
+| Data Quality | ✅ Complete | protocols/modbus/data_quality.py |
+| Modbus Server | ⏳ In Progress | protocols/modbus/server.py |
+| IEC 104 Server | ⏳ TODO | protocols/iec104/ |
+| DNP3 Server | ⏳ TODO | protocols/dnp3/ |
+| Node Models | ⏳ TODO | nodes/ |
+| SCADA Master | ⏳ TODO | occ/ |
+| Historian | ⏳ TODO | historian/ |
+| Security Logging | ⏳ TODO | security/ |
+| Docker Infrastructure | ⏳ TODO | docker/ |
+
+See [ARCHITECTURE.md](ARCHITECTURE.md) for detailed status.
+
+## Testing Individual Modules
+
+Each electrical module has embedded tests:
+
+```bash
+# DC Power Flow - 15-bus system
+python electrical/power_flow.py
+# Output: Bus angles, line flows, losses (should show ~5% loss)
+
+# Frequency Dynamics - Load step response
+python electrical/frequency_model.py
+# Output: Frequency recovery from 50 MW step (should recover in 30s)
+
+# Transformer Thermal - Overload scenario
+python electrical/thermal_model.py
+# Output: Oil/hot-spot temps during 120% overload
+
+# Protection Relay - Overcurrent trip
+python electrical/protection.py
+# Output: IEC inverse curve trip time calculation
+
+# Load Profile - 24-hour Indian curve
+python electrical/load_profile.py
+# Output: Hourly load with evening peak at 20:00
+
+# Economic Despatch - Merit order
+python electrical/economic_despatch.py
+# Output: Solar → Hydro → Coal loading sequence
+```
+
+## Configuration
+
+Key parameters in `config.py`:
+
+```python
+# Grid topology
+GENERATOR_CONFIG["GEN-001"]["rated_mw"] = 500.0  # Coal plant
+GENERATOR_CONFIG["GEN-002"]["rated_mw"] = 300.0  # Hydro plant
+GENERATOR_CONFIG["GEN-003"]["rated_mw"] = 200.0  # Solar plant
+
+# Line impedances (per-unit on 100 MVA base)
+LINE_IMPEDANCES[("GEN-001", "SUB-001")] = (0.02, 0.06, 0.03)  # R, X, B
+
+# Protection settings
+PROTECTION_CONFIG["ANSI_51"]["pickup_percent"] = 120.0  # 120% overcurrent pickup
+PROTECTION_CONFIG["ANSI_59"]["pickup_percent"] = 110.0  # 110% overvoltage
+
+# Modbus timing
+MODBUS_CONFIG["poll_interval_critical_s"] = 2.0
+MODBUS_CONFIG["response_times_ms"]["FC03"] = (12, 25)  # Min, max response time
+
+# Simulation
+SIMULATION_CONFIG["time_step_s"] = 1.0
+SIMULATION_CONFIG["power_flow_interval_s"] = 5.0
+```
+
+## Data Output
+
+### Historian Tags (IEC 61968 CIM Naming)
+```
+SUB001.TR1.BusVoltage.A          (kV)
+SUB001.TR1.OilTemperature        (°C)
+SUB001.TR1.HotSpotTemperature    (°C)
+SUB001.TR1.TapPosition           (1-17)
+GEN001.GEN1.ActivePower          (MW)
+GEN001.GEN1.Frequency            (Hz)
+DIST001.FEEDER1.Current.A        (A)
+```
+
+### Security Log Schema
+```sql
+CREATE TABLE protocol_transactions (
+    timestamp TIMESTAMPTZ NOT NULL,
+    node_id VARCHAR(20),
+    source_ip INET,
+    dest_ip INET,
+    protocol VARCHAR(10),
+    function_code INT,
+    register_address INT,
+    value INT,
+    response_time_ms FLOAT,
+    data_quality INT,
+    is_write BOOLEAN,
+    is_authorized BOOLEAN
+);
+```
+
+## References
+
+- **IEC 60076-7**: Power transformers - Loading guide for oil-immersed power transformers
+- **IEC 60255**: Measuring relays and protection equipment
+- **IEC 60870-5-104**: Telecontrol equipment and systems - Part 5-104: Transmission protocols
+- **IEEE Std 493-2007**: Gold Book - Design of Reliable Industrial and Commercial Power Systems
+- **IEEE C37.2**: Standard Electrical Power System Device Function Numbers
+- **IEC 61968**: Application integration at electric utilities - System interfaces for distribution management
+- **IEC 62682**: Management of alarms systems for the process industries
+- **GRID-INDIA/POSOCO**: Indian grid operational data and grid code
+
+## License
+
+[Specify license]
+
+## Contributing
+
+This is a research/educational project. Contributions welcome following electrical engineering and ICS security best practices.
+
+## Contact
+
+[Specify contact information]
+
+---
+
+**Building authentic SCADA infrastructure for cybersecurity research — one relay trip at a time.**
