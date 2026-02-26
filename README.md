@@ -52,16 +52,19 @@ Implements real electrical engineering, authentic ICS protocols, and operational
 ### Installation
 ```bash
 # Clone repository
-git clone <repository-url>
+git clone https://github.com/NirmalyaASinha/SCADA.git
 cd SCADA_SIM
 
-# Create virtual environment
+# Create virtual environment (optional for Docker)
 python3 -m venv venv
 source venv/bin/activate  # Linux/Mac
 # or: venv\Scripts\activate  # Windows
 
 # Install dependencies
 pip install -r requirements.txt
+
+# Note: IEC 104 is implemented in pure Python (no external lib needed)
+# DNP3 is not implemented yet
 
 # Start TimescaleDB (historian database)
 docker-compose up -d timescaledb
@@ -106,6 +109,65 @@ streamlit run dashboard.py
 # Terminal 4: SCADA Master CLI (optional)
 python3 scada_master_cli.py
 ```
+
+## Troubleshooting
+
+### Docker Build Errors
+
+**Error: "No matching distribution found for lib60870"**
+- **Fixed:** IEC 104 protocol is implemented in pure Python (no external library needed)
+- **Solution:** Use latest requirements.txt from repository
+
+**Error: "Could not find a version that satisfies the requirement"**
+- **Cause:** Python version mismatch (requires Python 3.10+)
+- **Solution:** Update Dockerfile base image or use `python:3.10-slim`
+
+**Error: "Port already in use"**
+```bash
+# Find and kill process using port
+sudo lsof -i :8501  # or :8000, :502, etc.
+sudo kill -9 <PID>
+
+# Or stop existing containers
+./deploy-docker.sh down
+```
+
+### Dashboard Connection Issues
+
+**"Cannot connect to API server"**
+```bash
+# Check if API server is running
+docker-compose ps
+
+# Check API health
+curl http://localhost:8000/health
+
+# Restart services
+./deploy-docker.sh restart
+```
+
+**"No nodes available"**
+- Wait 10-30 seconds for simulator to initialize
+- Check simulator logs: `docker-compose logs simulator`
+
+### Quick Reference
+
+```bash
+# View logs
+./deploy-docker.sh logs
+
+# Check status
+./deploy-docker.sh status
+
+# Clean restart
+./deploy-docker.sh down
+./deploy-docker.sh up
+
+# Access dashboard
+./deploy-docker.sh dashboard
+```
+
+See [QUICK_START.md](QUICK_START.md) for detailed guide.
 
 ## Architecture
 

@@ -11,11 +11,11 @@ aiohttp>=3.8.0
 # Modbus protocol
 pymodbus>=3.5.0
 
-# IEC 60870-5-104 protocol
-lib60870>=1.0.0
+# IEC 60870-5-104 protocol (pure Python implementation in protocols/iec104/)
+# No external library needed
 
-# DNP3 protocol (Python bindings for OpenDNP3)
-pydnp3>=0.2.3
+# DNP3 protocol - Not implemented (TODO)
+# pydnp3>=0.2.3
 
 # Database
 psycopg2-binary>=2.9.0      # PostgreSQL driver
