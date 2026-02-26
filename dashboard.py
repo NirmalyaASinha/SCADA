@@ -17,7 +17,9 @@ from typing import Dict, List, Optional
 # Configuration
 # ============================================================================
 
-API_BASE_URL = "http://localhost:8000"
+# Use container service name when in Docker, localhost when running locally
+import os
+API_BASE_URL = os.getenv("API_URL", "http://api_server:8000")
 REFRESH_INTERVAL = 2  # seconds
 
 # Page configuration

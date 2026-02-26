@@ -362,3 +362,6 @@
 {"timestamp": "2026-02-26T13:59:22.612378", "event_type": "login_success", "severity": "info", "user": "operator", "source_ip": "127.0.0.1", "action": "login", "result": "success", "details": {"timestamp": "2026-02-26T13:59:22.612377"}}
 {"timestamp": "2026-02-26T13:59:22.612536", "event_type": "node_added", "severity": "info", "user": "admin", "node_id": "GEN-001", "action": "add_node", "result": "success", "details": {"ip": "127.0.0.1", "modbus_port": 502, "iec104_port": 2414}}
 {"timestamp": "2026-02-26T13:59:22.612630", "event_type": "system_stop", "severity": "info", "user": "system", "action": "scada_master_stop"}
+{"timestamp": "2026-02-26T14:23:11.654141", "event_type": "system_start", "severity": "info", "user": "system", "action": "scada_master_start"}
+{"timestamp": "2026-02-26T14:29:38.551578", "event_type": "system_start", "severity": "info", "user": "system", "action": "scada_master_start"}
+{"timestamp": "2026-02-26T14:41:19.309919", "event_type": "system_start", "severity": "info", "user": "system", "action": "scada_master_start"}

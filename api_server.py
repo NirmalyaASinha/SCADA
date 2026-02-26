@@ -128,8 +128,8 @@ async def startup_event():
     auth_manager = scada_master.auth_manager
     
     # Initialize historian
-    historian = TimescaleDBHistorian(mock_mode=True)
-    historian.connect()
+    historian = TimescaleDBHistorian(use_mock=True)
+    await historian.connect()
     
     logger.info("SCADA API Server started successfully")
 
@@ -144,7 +144,7 @@ async def shutdown_event():
         await scada_master.stop()
     
     if historian:
-        historian.disconnect()
+        await historian.disconnect()
     
     logger.info("SCADA API Server stopped")
 
@@ -364,7 +364,7 @@ async def query_historical_data(
     """Query historical time-series data"""
     try:
         # Get measurements
-        measurements = historian.get_measurements(
+        measurements = await historian.get_measurements(
             node_id=request.node_id,
             start_time=request.start_time,
             end_time=request.end_time,
@@ -372,8 +372,10 @@ async def query_historical_data(
         )
         
         # Get aggregated stats
-        stats = historian.get_aggregated_stats(
+        stats = await historian.get_aggregated_stats(
             node_id=request.node_id,
+            start_time=request.start_time,
+            end_time=request.end_time,
             bucket_interval=request.bucket_interval
         )
         
@@ -404,7 +406,7 @@ async def get_latest_measurement(
 ):
     """Get latest measurement for a node"""
     try:
-        measurement = historian.get_latest_measurement(node_id)
+        measurement = await historian.get_latest_measurement(node_id)
         
         if not measurement:
             raise HTTPException(status_code=404, detail="No data found")
@@ -529,7 +531,7 @@ async def health_check():
         "status": "healthy",
         "timestamp": datetime.now().isoformat(),
         "scada_master": "running" if scada_master else "not initialized",
-        "historian": "connected" if historian and historian.connected else "disconnected"
+        "historian": "connected" if historian and historian.is_connected else "disconnected"
     }
 
 @app.get("/")
