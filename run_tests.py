@@ -23,6 +23,8 @@ TESTS = [
     ("test_scada_master.py", "SCADA Master Client (Multi-protocol polling)"),
     ("test_historian.py", "TimescaleDB Historian (Time-series storage)"),
     ("test_scada_master_historian.py", "SCADA Master + Historian Integration"),
+    ("test_security.py", "Security Module (Auth/Audit/RBAC)"),
+    ("test_scada_secure.py", "Secure SCADA Master Integration"),
     # ("electrical/power_flow.py", "DC Power Flow Solver (15-bus grid)"),  # Has numerical issues
     # ("electrical/frequency_model.py", "Frequency Dynamics (Swing equation, AGC)"),  # Has oscillation
 ]
