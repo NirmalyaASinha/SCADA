@@ -1,0 +1,25 @@
+[MASTER]
+disable=
+    missing-docstring,
+    missing-module-docstring,
+    missing-class-docstring,
+    missing-function-docstring,
+    too-many-statements,
+    too-many-arguments,
+    too-many-instance-attributes,
+    duplicate-code,
+    line-too-long,
+    unused-argument,
+    unused-variable,
+    broad-exception-caught,
+    no-else-return,
+    wrong-import-order,
+    invalid-name,
+    bare-except,
+    import-error,
+    unused-import
+
+max-line-length=120
+
+[FORMAT]
+max-line-length=120
