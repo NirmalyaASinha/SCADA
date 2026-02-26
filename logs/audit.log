@@ -365,3 +365,24 @@
 {"timestamp": "2026-02-26T14:23:11.654141", "event_type": "system_start", "severity": "info", "user": "system", "action": "scada_master_start"}
 {"timestamp": "2026-02-26T14:29:38.551578", "event_type": "system_start", "severity": "info", "user": "system", "action": "scada_master_start"}
 {"timestamp": "2026-02-26T14:41:19.309919", "event_type": "system_start", "severity": "info", "user": "system", "action": "scada_master_start"}
+{"timestamp": "2026-02-26T14:44:38.431203", "event_type": "system_stop", "severity": "info", "user": "system", "action": "scada_master_stop"}
+{"timestamp": "2026-02-26T14:44:40.757746", "event_type": "system_start", "severity": "info", "user": "system", "action": "scada_master_start"}
+{"timestamp": "2026-02-26T14:45:27.599057", "event_type": "login_success", "severity": "info", "user": "admin", "source_ip": "dashboard", "action": "login", "result": "success", "details": {"timestamp": "2026-02-26T14:45:27.599046"}}
+{"timestamp": "2026-02-26T14:48:07.226690", "event_type": "system_start", "severity": "info", "user": "system", "action": "scada_master_start"}
+{"timestamp": "2026-02-26T14:49:32.938801", "event_type": "system_stop", "severity": "info", "user": "system", "action": "scada_master_stop"}
+{"timestamp": "2026-02-26T14:49:34.707564", "event_type": "system_start", "severity": "info", "user": "system", "action": "scada_master_start"}
+{"timestamp": "2026-02-26T14:49:47.368295", "event_type": "login_success", "severity": "info", "user": "admin", "source_ip": "dashboard", "action": "login", "result": "success", "details": {"timestamp": "2026-02-26T14:49:47.368289"}}
+{"timestamp": "2026-02-26T14:49:50.901000", "event_type": "login_success", "severity": "info", "user": "operator", "source_ip": "dashboard", "action": "login", "result": "success", "details": {"timestamp": "2026-02-26T14:49:50.900987"}}
+{"timestamp": "2026-02-26T14:49:51.196834", "event_type": "login_success", "severity": "info", "user": "admin", "source_ip": "dashboard", "action": "login", "result": "success", "details": {"timestamp": "2026-02-26T14:49:51.196826"}}
+{"timestamp": "2026-02-26T14:50:01.456660", "event_type": "login_success", "severity": "info", "user": "admin", "source_ip": "dashboard", "action": "login", "result": "success", "details": {"timestamp": "2026-02-26T14:50:01.456653"}}
+{"timestamp": "2026-02-26T14:50:40.707563", "event_type": "system_stop", "severity": "info", "user": "system", "action": "scada_master_stop"}
+{"timestamp": "2026-02-26T14:50:42.581160", "event_type": "system_start", "severity": "info", "user": "system", "action": "scada_master_start"}
+{"timestamp": "2026-02-26T14:50:48.932489", "event_type": "login_success", "severity": "info", "user": "admin", "source_ip": "dashboard", "action": "login", "result": "success", "details": {"timestamp": "2026-02-26T14:50:48.932479"}}
+{"timestamp": "2026-02-26T14:50:54.245231", "event_type": "login_success", "severity": "info", "user": "admin", "source_ip": "dashboard", "action": "login", "result": "success", "details": {"timestamp": "2026-02-26T14:50:54.245222"}}
+{"timestamp": "2026-02-26T14:51:17.983953", "event_type": "system_stop", "severity": "info", "user": "system", "action": "scada_master_stop"}
+{"timestamp": "2026-02-26T14:51:20.346454", "event_type": "system_start", "severity": "info", "user": "system", "action": "scada_master_start"}
+{"timestamp": "2026-02-26T14:51:48.421932", "event_type": "login_success", "severity": "info", "user": "admin", "source_ip": "dashboard", "action": "login", "result": "success", "details": {"timestamp": "2026-02-26T14:51:48.421919"}}
+{"timestamp": "2026-02-26T14:52:17.196040", "event_type": "login_success", "severity": "info", "user": "admin", "source_ip": "dashboard", "action": "login", "result": "success", "details": {"timestamp": "2026-02-26T14:52:17.196032"}}
+{"timestamp": "2026-02-26T14:52:52.674957", "event_type": "login_success", "severity": "info", "user": "operator", "source_ip": "dashboard", "action": "login", "result": "success", "details": {"timestamp": "2026-02-26T14:52:52.674950"}}
+{"timestamp": "2026-02-26T15:30:52.150924", "event_type": "login_success", "severity": "info", "user": "admin", "source_ip": "dashboard", "action": "login", "result": "success", "details": {"timestamp": "2026-02-26T15:30:52.150917"}}
+{"timestamp": "2026-02-26T15:51:48.703462", "event_type": "system_stop", "severity": "info", "user": "system", "action": "scada_master_stop"}

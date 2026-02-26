@@ -1,0 +1,100 @@
+# Prometheus Configuration
+# Time-series metrics collection for SCADA system monitoring
+
+global:
+  scrape_interval: 15s        # Default scrape interval
+  evaluation_interval: 15s    # Default evaluation interval
+  external_labels:
+    monitor: 'scada-monitor'
+
+# Alerting configuration
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          # - 'alertmanager:9093'
+
+rule_files:
+  # - 'rules/*.yml'
+
+# Scrape configurations
+scrape_configs:
+  # Prometheus itself
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # SCADA Master API
+  - job_name: 'scada_master'
+    scrape_interval: 10s
+    static_configs:
+      - targets: ['scada_master:9000']
+    metrics_path: '/metrics'
+
+  # Generation Nodes
+  - job_name: 'gen_nodes'
+    scrape_interval: 10s
+    static_configs:
+      - targets: ['node_gen001:8101', 'node_gen002:8103', 'node_gen003:8105']
+        labels:
+          node_type: 'generator'
+          tier: 'generation'
+    metrics_path: '/metrics'
+
+  # Transmission Substations
+  - job_name: 'sub_nodes'
+    scrape_interval: 10s
+    static_configs:
+      - targets: [
+          'node_sub001:8111', 'node_sub002:8113', 'node_sub003:8115',
+          'node_sub004:8117', 'node_sub005:8119', 'node_sub006:8121',
+          'node_sub007:8123'
+        ]
+        labels:
+          node_type: 'substation'
+          tier: 'transmission'
+    metrics_path: '/metrics'
+
+  # Distribution Feeders
+  - job_name: 'dist_nodes'
+    scrape_interval: 10s
+    static_configs:
+      - targets: [
+          'node_dist001:8131', 'node_dist002:8133', 'node_dist003:8135',
+          'node_dist004:8137', 'node_dist005:8139'
+        ]
+        labels:
+          node_type: 'distribution'
+          tier: 'distribution'
+    metrics_path: '/metrics'
+
+  # Anomaly Detection Engine
+  - job_name: 'anomaly_engine'
+    scrape_interval: 15s
+    static_configs:
+      - targets: ['anomaly_engine:9500']
+    metrics_path: '/metrics'
+
+  # TimescaleDB (PostgreSQL)
+  - job_name: 'timescaledb'
+    scrape_interval: 30s
+    static_configs:
+      - targets: ['timescaledb:5432']
+    metrics_path: '/metrics'
+    # Note: PostgreSQL metrics require postgres_exporter sidecar
+
+  # Redis Cache
+  - job_name: 'redis'
+    scrape_interval: 30s
+    static_configs:
+      - targets: ['redis:6379']
+    metrics_path: '/metrics'
+    # Note: Redis metrics require redis_exporter sidecar
+
+  # Nginx (if metrics enabled)
+  - job_name: 'nginx'
+    scrape_interval: 30s
+    static_configs:
+      - targets: ['nginx:80']
+    metrics_path: '/metrics'
+    # Note: Nginx metrics require nginx-prometheus-exporter

@@ -1,0 +1,35 @@
+FROM node:18-alpine as builder
+
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+
+# Install dependencies (production only for final build)
+RUN npm install
+
+# Copy source
+COPY public/ ./public/
+COPY src/ ./src/
+
+# Build React app
+RUN npm run build
+
+# ============================================================================
+# Production stage
+# ============================================================================
+FROM nginx:alpine
+
+# Copy built React app from builder
+COPY --from=builder /app/build /usr/share/nginx/html
+
+# Copy nginx config
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+EXPOSE 80
+
+HEALTHCHECK --interval=10s --timeout=5s --retries=3 \
+    CMD wget --quiet --tries=1 --spider http://localhost/ || exit 1
+
+CMD ["nginx", "-g", "daemon off;"]
+
