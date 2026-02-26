@@ -364,6 +364,15 @@ class SecureSCADAMaster(SCADAMaster):
                 severity=Severity.WARNING if 49 < conn.frequency_hz < 51 else Severity.CRITICAL
             )
     
+    async def get_alarms(self) -> list:
+        """
+        Get current active alarms.
+        
+        Returns:
+            List of alarm dictionaries with timestamp, node_id, message, severity
+        """
+        return self.alarms if hasattr(self, 'alarms') else []
+    
     def get_audit_events(self,
                         session_id: str,
                         event_type: Optional[EventType] = None,

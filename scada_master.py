@@ -93,6 +93,10 @@ class SCADAMaster:
         # Measurements history
         self.measurements_buffer: Dict[str, List[Dict]] = {}
         
+        # Alarms tracking
+        self.alarms: List[Dict] = []  # List of active alarms
+        self.max_alarms = 1000  # Keep last 1000 alarms
+        
         # Commands queue
         self.command_queue: asyncio.Queue = None
         
@@ -309,26 +313,45 @@ class SCADAMaster:
     def _check_alarms(self, conn: NodeConnection):
         """Check for alarm conditions."""
         alarms = []
+        severity = "INFO"
         
         # Overvoltage
         if conn.voltage_kv > 250:
             alarms.append(f"Overvoltage: {conn.voltage_kv:.1f} kV")
+            severity = "CRITICAL"
         
         # Undervoltage
         if conn.voltage_kv < 200 and conn.voltage_kv > 0:
             alarms.append(f"Undervoltage: {conn.voltage_kv:.1f} kV")
+            severity = "CRITICAL"
         
         # Overfrequency
         if conn.frequency_hz > 50.5:
             alarms.append(f"Overfrequency: {conn.frequency_hz:.2f} Hz")
+            severity = "WARNING"
         
         # Underfrequency
         if conn.frequency_hz < 49.5:
             alarms.append(f"Underfrequency: {conn.frequency_hz:.2f} Hz")
+            severity = "WARNING"
         
         for alarm in alarms:
             self.logger.warning(f"ALARM [{conn.node_id}]: {alarm}")
             self.stats['alarms_generated'] += 1
+            
+            # Store alarm
+            alarm_data = {
+                'timestamp': datetime.now().isoformat(),
+                'node_id': conn.node_id,
+                'message': alarm,
+                'severity': severity,
+                'value': conn.voltage_kv if 'voltage' in alarm.lower() else conn.frequency_hz
+            }
+            self.alarms.append(alarm_data)
+            
+            # Keep last 1000 alarms
+            if len(self.alarms) > self.max_alarms:
+                self.alarms.pop(0)
     
     async def _command_handler(self):
         """Process command queue (sending commands to nodes)."""

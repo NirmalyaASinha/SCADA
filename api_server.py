@@ -127,6 +127,41 @@ async def startup_event():
     scada_master = SecureSCADAMaster()
     auth_manager = scada_master.auth_manager
     
+    # Initialize nodes from configuration
+    try:
+        from config import ALL_NODES
+        
+        node_ips = {
+            # Generators
+            "GEN-001": "172.20.0.10",
+            "GEN-002": "172.20.0.11", 
+            "GEN-003": "172.20.0.12",
+            # Substations
+            "SUB-001": "172.20.0.20",
+            "SUB-002": "172.20.0.21",
+            "SUB-003": "172.20.0.22",
+            "SUB-004": "172.20.0.23",
+            "SUB-005": "172.20.0.24",
+            "SUB-006": "172.20.0.25",
+            "SUB-007": "172.20.0.26",
+            # Distribution
+            "DIST-001": "172.20.0.30",
+            "DIST-002": "172.20.0.31",
+            "DIST-003": "172.20.0.32",
+            "DIST-004": "172.20.0.33",
+            "DIST-005": "172.20.0.34",
+        }
+        
+        # Add all nodes to the SCADA master
+        for node_id in ALL_NODES:
+            ip = node_ips.get(node_id, "127.0.0.1")
+            scada_master.add_node(node_id, ip, modbus_port=502, iec104_port=2404)
+            logger.info(f"Added node {node_id} at {ip}")
+        
+        logger.info(f"Initialized {len(scada_master.nodes)} nodes")
+    except Exception as e:
+        logger.warning(f"Failed to initialize nodes from config: {e}")
+    
     # Initialize historian
     historian = TimescaleDBHistorian(use_mock=True)
     await historian.connect()
@@ -206,7 +241,7 @@ async def get_system_overview(session_id: str = Depends(verify_token)):
     try:
         nodes = scada_master.nodes
         total_nodes = len(nodes)
-        connected_nodes = sum(1 for n in nodes.values() if n.get("connected", False))
+        connected_nodes = sum(1 for n in nodes.values() if n.is_healthy)
         
         # Get alarms
         alarms = await scada_master.get_alarms()
@@ -215,13 +250,8 @@ async def get_system_overview(session_id: str = Depends(verify_token)):
         
         # Calculate total power
         total_power = 0.0
-        for node_id in nodes:
-            try:
-                status = await scada_master.get_node_status_secure(session_id, node_id)
-                if status and "power_mw" in status:
-                    total_power += status["power_mw"]
-            except:
-                pass
+        for node_conn in nodes.values():
+            total_power += node_conn.power_mw
         
         return {
             "timestamp": datetime.now().isoformat(),
@@ -245,12 +275,16 @@ async def get_all_nodes(session_id: str = Depends(verify_token)):
         nodes = scada_master.nodes
         node_list = []
         
-        for node_id, node_info in nodes.items():
+        for node_id, node_conn in nodes.items():
+            # node_conn is a NodeConnection object
             node_list.append({
                 "node_id": node_id,
-                "ip_address": node_info.get("ip", "unknown"),
-                "protocols": list(node_info.get("ports", {}).keys()),
-                "connected": node_info.get("connected", False)
+                "ip_address": node_conn.ip,
+                "connected": node_conn.is_healthy,
+                "voltage_kv": node_conn.voltage_kv,
+                "power_mw": node_conn.power_mw,
+                "frequency_hz": node_conn.frequency_hz,
+                "breaker_closed": node_conn.breaker_closed
             })
         
         return {"nodes": node_list}
