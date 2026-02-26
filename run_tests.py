@@ -20,6 +20,7 @@ TESTS = [
     ("nodes/substation_node.py", "Substation Node (Transformer Thermal/OLTC)"),
     ("nodes/distribution_node.py", "Distribution Node (Capacitor Banks/UFLS)"),
     ("simulator.py", "Main Grid Simulator (15-node orchestration)"),
+    ("test_scada_master.py", "SCADA Master Client (Multi-protocol polling)"),
     # ("electrical/power_flow.py", "DC Power Flow Solver (15-bus grid)"),  # Has numerical issues
     # ("electrical/frequency_model.py", "Frequency Dynamics (Swing equation, AGC)"),  # Has oscillation
 ]
