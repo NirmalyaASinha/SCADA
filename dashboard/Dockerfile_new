@@ -1,35 +1,26 @@
-FROM node:18-alpine as builder
+FROM node:20-alpine AS build
 
 WORKDIR /app
 
-# Copy package files
-COPY package*.json ./
-
-# Install dependencies (production only for final build)
+COPY dashboard/package*.json ./
 RUN npm install
 
-# Copy source
-COPY public/ ./public/
-COPY src/ ./src/
-
-# Build React app
+COPY dashboard/src ./src
+COPY dashboard/tsconfig.json dashboard/vite.config.ts dashboard/tailwind.config.js dashboard/postcss.config.js dashboard/index.html ./
 RUN npm run build
 
-# ============================================================================
-# Production stage
-# ============================================================================
 FROM nginx:alpine
 
-# Copy built React app from builder
-COPY --from=builder /app/build /usr/share/nginx/html
-
-# Copy nginx config
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=build /app/dist /usr/share/nginx/html
+COPY dashboard/nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
 
 HEALTHCHECK --interval=10s --timeout=5s --retries=3 \
     CMD wget --quiet --tries=1 --spider http://localhost/ || exit 1
+
+
+
 
 CMD ["nginx", "-g", "daemon off;"]
 

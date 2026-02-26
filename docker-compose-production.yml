@@ -793,8 +793,30 @@ services:
       retries: 5
 
   # ============================================================================
-  # DASHBOARD (React + Node.js)
+  # DASHBOARD (React + Vite + TypeScript)
   # ============================================================================
+
+  dashboard:
+    build:
+      context: .
+      dockerfile: dashboard/Dockerfile_new
+    container_name: scada_dashboard
+    ports:
+      - "3000:80"
+    networks:
+      occ_net:
+        ipv4_address: 10.0.0.110
+    depends_on:
+      scada_master:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    environment:
+      - NGINX_HOST=0.0.0.0
+      - NGINX_PORT=80
 
 ################################################################################
 # VOLUMES

@@ -4,6 +4,19 @@
 
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap');
 
+:root {
+  --bg: #0a0a0a;
+  --panel: #111111;
+  --border: #2a2a2a;
+  --text: #e8e8e8;
+  --muted: #a0a0a0;
+  --green: #00ff88;
+  --amber: #ffaa00;
+  --red: #ff3333;
+  --purple: #aa44ff;
+  --blue: #33a1ff;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -11,13 +24,38 @@
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #0a0a0a;
-  color: #e8e8e8;
+}
+
+.font-mono {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.status-green { color: var(--green); }
+.status-amber { color: var(--amber); }
+.status-red { color: var(--red); }
+.status-purple { color: var(--purple); }
+.status-muted { color: var(--muted); }
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  border: 1px solid var(--border);
+  background: #151515;
 }
 
 /* Scrollbar styling */
@@ -39,33 +77,20 @@ body {
   background: #444444;
 }
 
-/* Flash animation for live values */
 @keyframes flash {
   0%, 100% { opacity: 1; }
-  50% { opacity: 0.7; color: #ffffff; }
+  50% { opacity: 0.4; }
 }
 
 .flash {
-  animation: flash 0.2s ease-in-out;
+  animation: flash 0.3s ease-in-out;
 }
 
-/* Pulse animation for alerts */
 @keyframes pulse {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.5; }
 }
 
 .pulse {
-  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-/* Shake animation for errors */
-@keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-10px); }
-  75% { transform: translateX(10px); }
-}
-
-.shake {
-  animation: shake 0.3s ease-in-out;
+  animation: pulse 1.4s ease-in-out infinite;
 }
