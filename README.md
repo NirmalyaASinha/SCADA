@@ -11,32 +11,45 @@ This simulator replicates a 15-node power grid with:
 
 Implements real electrical engineering, authentic ICS protocols, and operational procedures matching actual Indian grid (GRID-INDIA/POSOCO) characteristics.
 
-## Key Features
+## Why We Built This System
+
+This system exists to provide a realistic, controllable, and auditable SCADA environment for:
+- cybersecurity research and attack/defense simulation
+- anomaly detection training with ground-truth telemetry
+- protocol behavior analysis (Modbus TCP, IEC 60870-5-104)
+- operator training and control workflow validation
+
+## How This System Can Be Used
+
+Use it as a repeatable lab environment to:
+- generate realistic operational data for ML and analytics
+- evaluate detection pipelines using real protocol traffic
+- rehearse SCADA workflows (polling, alarms, commands, audit)
+- validate historian queries and dashboards under load
+
+## Key Features (Utilized)
 
 ### Electrical System
-- ✅ **DC Power Flow**: 15-bus Newton-Raphson solver with line losses
-- ✅ **Frequency Dynamics**: Swing equation, governor droop, AGC
-- ✅ **Transformer Thermal Model**: IEC 60076-7  with oil/hot-spot temperatures
-- ✅ **Protection Relays**: ANSI 27/51/59/81/87T with real trip curves
-- ✅ **Indian Load Profile**: Time-of-day, seasonal, festival patterns
-- ✅ **Economic Despatch**: Merit order (solar → hydro → coal)
+- **DC Power Flow**: 15-bus Newton-Raphson solver with line losses
+- **Frequency Dynamics**: Swing equation, governor droop, AGC
+- **Transformer Thermal Model**: IEC 60076-7 with oil/hot-spot temperatures
+- **Protection Relays**: ANSI 27/51/59/81/87T with real trip curves
+- **Indian Load Profile**: Time-of-day, seasonal, festival patterns
+- **Economic Despatch**: Merit order (solar → hydro → coal)
 
 ### SCADA Protocols
-- ⏳ **Modbus TCP**: Production-faithful RTU behavior (8-40ms response times)
-- ⏳ **IEC 60870-5-104**: Spontaneous transmission, time tagging
-- ⏳ **DNP3**: Unsolicited responses, event buffering
+- **Modbus TCP**: Production-faithful RTU behavior (8-40ms response times)
+- **IEC 60870-5-104**: Spontaneous transmission, time tagging
 
-### Operational Realism
-- ⏳ **SCADA Master**: Multi-node polling (0.5s/2s/10s intervals)
-- ⏳ **AVR Control**: Automatic voltage regulation via OLTC
-- ⏳ **Alarm Management**: IEC 62682 priorities and state machine
-- ⏳ **SOE Recording**: 1ms timestamp resolution
-- ⏳ **Equipment Failures**: Weibull reliability with pre-failure signatures
+### Operational Workflow
+- **SCADA Master**: Multi-node polling with command dispatch
+- **Alarm Management**: Priority-based alarms with audit trail
+- **SOE Recording**: Sequence-of-events logging for node actions
 
 ### Data Infrastructure
-- ⏳ **TimescaleDB**: Time-series historian with compression
-- ⏳ **Security Logging**: Per-transaction logging for ML training
-- ⏳ **Feature Extraction**: Traffic statistics for anomaly detection
+- **TimescaleDB Historian**: Time-series storage and aggregation
+- **Security Logging**: Authentication, authorization, and audit events
+- **Web Dashboard**: FastAPI + Streamlit monitoring and control
 
 ## Quick Start
 
@@ -84,7 +97,7 @@ python electrical/protection.py
 # Expected output: Power flow convergence, frequency recovery plots, thermal trips
 ```
 
-### Running Complete System
+### Running the System
 ```bash
 # Option 1: Docker Deployment (Recommended)
 ./deploy-docker.sh up
@@ -97,6 +110,42 @@ http://localhost:8501
 http://localhost:8000/docs
 
 # Option 2: Manual Start
+# Terminal 1: Simulator
+python3 simulator.py
+
+# Terminal 2: API Server
+python3 api_server.py
+
+# Terminal 3: Web Dashboard
+streamlit run dashboard.py
+
+# Terminal 4: SCADA Master CLI (optional)
+python3 scada_master_cli.py
+```
+
+### Workflow (Docker-First)
+
+```bash
+# 1) Start all services
+./deploy-docker.sh up
+
+# 2) Verify services
+docker compose ps
+
+# 3) Open dashboard
+./deploy-docker.sh dashboard
+# Login: admin / admin123
+
+# 4) View logs (optional)
+./deploy-docker.sh logs
+
+# 5) Stop services when done
+./deploy-docker.sh down
+```
+
+### Workflow (Local Development)
+
+```bash
 # Terminal 1: Simulator
 python3 simulator.py
 
@@ -171,7 +220,12 @@ See [QUICK_START.md](QUICK_START.md) for detailed guide.
 
 ## Architecture
 
-See [ARCHITECTURE.md](ARCHITECTURE.md) for complete system design.
+The system is structured as a grid simulator + protocol servers feeding a
+secured SCADA master, historian, and web dashboard. Data flows from simulated
+nodes through Modbus/IEC 104 to the SCADA master, then into TimescaleDB and the
+API for visualization and control.
+
+See [ARCHITECTURE.md](ARCHITECTURE.md) for the full system design.
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -249,27 +303,29 @@ If the answer is no — we fix it.
 - Seasonal patterns (summer +20% AC load, monsoon baseline)
 - Festival spikes (Diwali +25% at 20:00)
 
-## Implementation Status
+## Utilized Components
 
-| Component | Status | Files |
-|-----------|--------|-------|
-| Configuration | ✅ Complete | config.py |
-| Power Flow | ✅ Complete | electrical/power_flow.py |
-| Frequency Model | ✅ Complete | electrical/frequency_model.py |
-| Thermal Model | ✅ Complete | electrical/thermal_model.py |
-| Protection Relays | ✅ Complete | electrical/protection.py |
-| Load Profile | ✅ Complete | electrical/load_profile.py |
-| Economic Despatch | ✅ Complete | electrical/economic_despatch.py |
-| Modbus Register Map | ✅ Complete | protocols/modbus/register_map.py |
-| Data Quality | ✅ Complete | protocols/modbus/data_quality.py |
-| Modbus Server | ⏳ In Progress | protocols/modbus/server.py |
-| IEC 104 Server | ⏳ TODO | protocols/iec104/ |
-| DNP3 Server | ⏳ TODO | protocols/dnp3/ |
-| Node Models | ⏳ TODO | nodes/ |
-| SCADA Master | ⏳ TODO | occ/ |
-| Historian | ⏳ TODO | historian/ |
-| Security Logging | ⏳ TODO | security/ |
-| Docker Infrastructure | ⏳ TODO | docker/ |
+| Component | Utilized | Files | Notes |
+|-----------|----------|-------|-------|
+| Configuration | Yes | config.py | Grid topology and defaults |
+| Power Flow | Yes | electrical/power_flow.py | 15-bus DC solver |
+| Frequency Model | Yes | electrical/frequency_model.py | Swing equation |
+| Thermal Model | Yes | electrical/thermal_model.py | IEC 60076-7 |
+| Protection Relays | Yes | electrical/protection.py | ANSI 27/51/59/81/87T |
+| Load Profile | Yes | electrical/load_profile.py | Indian grid profile |
+| Economic Despatch | Yes | electrical/economic_despatch.py | Merit order |
+| Modbus Register Map | Yes | protocols/modbus/register_map.py | RTU mapping |
+| Data Quality | Yes | protocols/modbus/data_quality.py | IEC flags |
+| Modbus Server | Yes | protocols/modbus/server.py | RTU server |
+| IEC 104 Server | Yes | protocols/iec104/ | Protocol stack |
+| DNP3 Server | No | protocols/dnp3/ | Reserved placeholder |
+| Node Models | Yes | nodes/ | GEN/SUB/DIST |
+| SCADA Master | Yes | scada_master.py | Multi-protocol polling |
+| Historian | Yes | historians/ | Time-series storage |
+| Security Logging | Yes | security/ | Auth + audit |
+| API Server | Yes | api_server.py | FastAPI dashboard API |
+| Web Dashboard | Yes | dashboard.py | Streamlit UI |
+| Docker Infrastructure | Yes | Dockerfile, docker-compose.yml | Deployment |
 
 See [ARCHITECTURE.md](ARCHITECTURE.md) for detailed status.
 

@@ -83,6 +83,7 @@ services:
     volumes:
       - ./logs:/app/logs
       - audit_logs:/app/logs/audit
+    command: python3 scada_master_secure.py
     restart: unless-stopped
 
   # API Server (FastAPI REST API for dashboard)

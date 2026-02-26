@@ -458,6 +458,7 @@ class GridSimulator:
 # ==================== STANDALONE TEST ====================
 
 if __name__ == "__main__":
+    import os
     import sys
     from pathlib import Path
     from datetime import timedelta
@@ -468,6 +469,20 @@ if __name__ == "__main__":
         format='%(levelname)s:%(name)s:%(message)s'
     )
     
+    run_mode = os.environ.get("SCADA_MODE", "test").lower()
+    
+    # Server mode (used in Docker) - run continuously
+    if run_mode == "simulator":
+        logger.info("Starting grid simulator in continuous mode")
+        sim = GridSimulator(timestep_s=1.0)
+        try:
+            while True:
+                sim.run(duration_s=3600.0, realtime=True)
+        except KeyboardInterrupt:
+            logger.info("Simulator stopped by user")
+        sys.exit(0)
+    
+    # Test mode (default) - short validation run
     print("="*70)
     print("GRID SIMULATOR TEST")
     print("="*70)
